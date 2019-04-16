@@ -2,8 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from pyquery import PyQuery as pq
+from lxml import etree
 import time
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 browser = webdriver.Chrome()  # 声明浏览器并初始化
 wait = WebDriverWait(browser, 10)  # 指定最长等待时间
@@ -16,22 +18,28 @@ def search():
         input.send_keys('西安奔驰')  # 输入文字
         time.sleep(1)  # 延时1s
         button.click()  #完成搜索动作
+        get_prodcts()
     except TimeoutError:
         return search()
 
 def get_prodcts():
+    for i in range(10):
+        browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+        ActionChains(browser).key_down(Keys.DOWN).perform()
+        time.sleep(5)
     try:
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#SearchMain .ListShortcut .List .Card SearchResult-Card .List-item')))  # 用until(传入要等待的条件：节点加载出来，传入定位元组，用CSS选择器)
         html = browser.page_source  # 获得网页源代码
-        doc = pq(html)  # 选择pyquery并初始化
-        items = doc('#SearchMain .ListShortcut .List .Card SearchResult-Card .List-item').items()
-        for item in items:
-            product = {
-                'title': item.find('.ContentItem-title').text(),
-                'image': item.find('.RichText ztext CopyrightRichText-richText').text(),
-            }
-            print(product)
-    except TimeoutError:
+        tree = etree.HTML(html)
+        titles = tree.xpath('//*[@id="SearchMain"]/div/div/div/div//div')
+        for title in titles:
+            title = title.xpath('./div/div/h2/div/a/span//text()')
+            print(title)
+    except Exception as e:
+        print(e)
         return get_prodcts()
+
+
+if __name__ == '__main__':
+    search()
 
 
