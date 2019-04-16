@@ -32,8 +32,11 @@ def get_prodcts():
         tree = etree.HTML(html)
         titles = tree.xpath('//*[@id="SearchMain"]/div/div/div/div//div')
         for title in titles:
-            title = title.xpath('./div/div/h2/div/a/span//text()')
-            print(title)
+            title = title.xpath('./div/div/h2//a/span//text()')
+            if title == []:
+                pass
+            else:
+                print(title)
     except Exception as e:
         print(e)
         return get_prodcts()
