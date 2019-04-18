@@ -38,11 +38,11 @@ def get_prodcts():
             if title == []:
                 pass
             else:
-                print('问题' + title)
+                print(title)
             if comment == []:
                 pass
             else:
-                print('评论：' + comment)
+                print(comment)
             if attitudes_count == []:
                 pass
             else:
@@ -50,7 +50,7 @@ def get_prodcts():
                     attitudes_count = attitudes_count[1]
                 else:
                     attitudes_count = ""
-                print('点赞' + attitudes_count)
+                print(attitudes_count)
     except Exception as e:
         print(e)
         return get_prodcts()
