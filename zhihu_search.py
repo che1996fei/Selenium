@@ -30,13 +30,27 @@ def get_prodcts():
     try:
         html = browser.page_source  # 获得网页源代码
         tree = etree.HTML(html)
-        titles = tree.xpath('//*[@id="SearchMain"]/div/div/div/div//div')
-        for title in titles:
-            title = title.xpath('./div/div/h2//a/span//text()')
+        items = tree.xpath('//*[@id="SearchMain"]/div/div/div/div//div')
+        for item in items:
+            title = item.xpath('./div/div/h2//a/span//text()')
+            comment = item.xpath('./div/div[1]/span//text()')
+            attitudes_count = item.xpath('./div/div/div[2]/span/button[1]//text()')
             if title == []:
                 pass
             else:
-                print(title)
+                print('问题' + title)
+            if comment == []:
+                pass
+            else:
+                print('评论：' + comment)
+            if attitudes_count == []:
+                pass
+            else:
+                if attitudes_count:
+                    attitudes_count = attitudes_count[1]
+                else:
+                    attitudes_count = ""
+                print('点赞' + attitudes_count)
     except Exception as e:
         print(e)
         return get_prodcts()
